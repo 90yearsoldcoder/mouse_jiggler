@@ -9,9 +9,9 @@ import subprocess
 from dataclasses import dataclass
 from typing import Optional
 
-from .value_object import Interval, Duration, Amplitude
-from .patterns import PatternStrategy, SquarePattern
-from .ports import (
+from mouse_jiggler.core.value_object import Interval, Duration, Amplitude
+from mouse_jiggler.core.patterns import PatternStrategy, SquarePattern
+from mouse_jiggler.core.ports import (
     MousePort,
     StateRepoPort,
     TimePort,
