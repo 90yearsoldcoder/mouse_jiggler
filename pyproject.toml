@@ -1,0 +1,17 @@
+[project]
+name = "mouse-jiggler"
+version = "0.1.0"
+description = "Minimal terminal-controlled mouse jiggler"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["pynput>=1.7"]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+mousejiggler = "mouse_jiggler.cli:main"
