@@ -4,8 +4,8 @@ from __future__ import annotations
 import argparse
 import sys
 
-from .core.value_objects import Interval, Duration, Amplitude, ValueErrorSpec
-from .core.pattern import SquarePattern  # can expose pattern selection later
+from .core.value_object import Interval, Duration, Amplitude, ValueErrorSpec
+from .core.patterns import SquarePattern  # can expose pattern selection later
 from .core.service import JigglerConfig, JigglerService
 
 from .adapters.system_time import SystemTime

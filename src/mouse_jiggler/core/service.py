@@ -70,8 +70,8 @@ class JigglerService:
 
         # Compose argv for background process
         argv = [
-            sys.executable or sys.argv[0],
-            sys.argv[0],
+            sys.executable,
+            "-m", "mouse_jiggler.cli",
             "run",
             "--interval", f"{cfg.interval.seconds}s",
             "--amplitude", str(cfg.amplitude.pixels),
@@ -79,6 +79,7 @@ class JigglerService:
         if not cfg.duration.is_infinite():
             argv += ["--duration", f"{cfg.duration.seconds}s"]
 
+        print(argv)  # Debug output
         self.daemon.spawn_run(argv)
 
         # Wait briefly for pid file confirmation

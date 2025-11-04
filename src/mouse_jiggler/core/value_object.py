@@ -115,11 +115,14 @@ class Amplitude:
 
     @staticmethod
     def from_int(pixels: int) -> "Amplitude":
-        if not isinstance(pixels, int):
+        # Accept ints and numeric strings (coerce when possible) for robustness
+        try:
+            val = int(pixels)
+        except (TypeError, ValueError):
             raise ValueErrorSpec("Amplitude must be an integer.")
-        if pixels <= 0:
-            raise ValueErrorSpec(f"Amplitude must be >= 1, got {pixels}.")
-        return Amplitude(pixels=pixels)
+        if val <= 0:
+            raise ValueErrorSpec(f"Amplitude must be >= 1, got {val}.")
+        return Amplitude(pixels=val)
 
     def __str__(self) -> str:
         return f"{self.pixels}px"
