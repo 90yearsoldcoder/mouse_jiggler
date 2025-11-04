@@ -9,8 +9,8 @@ import subprocess
 from dataclasses import dataclass
 from typing import Optional
 
-from .value_objects import Interval, Duration, Amplitude
-from .pattern import PatternStrategy, SquarePattern
+from .value_object import Interval, Duration, Amplitude
+from .patterns import PatternStrategy, SquarePattern
 from .ports import (
     MousePort,
     StateRepoPort,

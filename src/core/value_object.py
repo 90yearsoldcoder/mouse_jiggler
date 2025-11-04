@@ -1,4 +1,4 @@
-# src/core/value_objects.py
+# src/core/value_object.py
 from __future__ import annotations
 
 from dataclasses import dataclass

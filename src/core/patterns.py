@@ -1,4 +1,4 @@
-# src/core/pattern.py
+# src/core/patterns.py
 from __future__ import annotations
 
 import abc
