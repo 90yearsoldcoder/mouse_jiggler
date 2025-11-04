@@ -1,18 +1,17 @@
-# src/cli.py
 from __future__ import annotations
 
 import argparse
 import sys
 
-from .core.value_object import Interval, Duration, Amplitude, ValueErrorSpec
-from .core.patterns import SquarePattern  # can expose pattern selection later
-from .core.service import JigglerConfig, JigglerService
+from mouse_jiggler.core.value_object import Interval, Duration, Amplitude, ValueErrorSpec
+from mouse_jiggler.core.patterns import SquarePattern  # can expose pattern selection later
+from mouse_jiggler.core.service import JigglerConfig, JigglerService
 
-from .adapters.system_time import SystemTime
-from .adapters.fs_repo import FilesystemStateRepo
-from .adapters.process_probe import SimpleProcessProbe
-from .adapters.pynput_mouse import PynputMouseAdapter
-from .adapters.daemon_manager import SubprocessDaemonManager
+from mouse_jiggler.adapters.system_time import SystemTime
+from mouse_jiggler.adapters.fs_repo import FilesystemStateRepo
+from mouse_jiggler.adapters.process_probe import SimpleProcessProbe
+from mouse_jiggler.adapters.pynput_mouse import PynputMouseAdapter
+from mouse_jiggler.adapters.daemon_manager import SubprocessDaemonManager
 
 
 def build_parser() -> argparse.ArgumentParser:

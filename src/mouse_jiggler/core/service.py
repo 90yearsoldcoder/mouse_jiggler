@@ -69,13 +69,23 @@ class JigglerService:
                 self.repo.clear_pid()
 
         # Compose argv for background process
-        argv = [
-            sys.executable,
-            "-m", "mouse_jiggler.cli",
-            "run",
-            "--interval", f"{cfg.interval.seconds}s",
-            "--amplitude", str(cfg.amplitude.pixels),
-        ]
+        if getattr(sys, "frozen", False):
+            # Running as a bundled executable
+            argv = [
+                sys.executable,
+                "run",
+                "--interval", f"{cfg.interval.seconds}s",
+                "--amplitude", str(cfg.amplitude.pixels),
+            ]
+        else:
+            # Running via Python module
+            argv = [
+                sys.executable,
+                "-m", "mouse_jiggler.cli",
+                "run",
+                "--interval", f"{cfg.interval.seconds}s",
+                "--amplitude", str(cfg.amplitude.pixels),
+            ]
         if not cfg.duration.is_infinite():
             argv += ["--duration", f"{cfg.duration.seconds}s"]
 
