@@ -104,6 +104,9 @@ class JigglerService:
     def run(self, cfg: JigglerConfig) -> None:
         """
         Execute the main jiggle loop in foreground.
+
+        On Windows, this also requests the system to stay awake (no sleep,
+        no display off) while the jiggler is running.
         """
         self.repo.write_pid(os.getpid())
         self.repo.clear_stop()
@@ -123,23 +126,62 @@ class JigglerService:
         duration = cfg.duration.seconds
         deadline = None if cfg.duration.is_infinite() else self.clock.now() + duration
 
+        # Optional: prevent system sleep on Windows
+        inhibitor = None
+        if os.name == "nt":
+            try:
+                # Local import to avoid hard dependency at module import time
+                from mouse_jiggler.adapters.win_power import WindowsPowerInhibitor
+                inhibitor = WindowsPowerInhibitor()
+                inhibitor.activate()
+            except Exception:
+                inhibitor = None  # If this fails, just continue without power inhibit
+
         step = 0
         try:
             while True:
+                # Check stop flag and deadline
                 if self.repo.has_stop():
                     break
-                if deadline and self.clock.now() >= deadline:
+                now = self.clock.now()
+                if deadline and now >= deadline:
                     break
 
+                # Compute and apply delta
                 dx, dy = cfg.pattern.next_delta(step, amp)
                 try:
                     self.mouse.move(dx, dy)
                 except Exception:
-                    pass  # ignore transient errors
+                    # Ignore transient input errors; continue the loop
+                    pass
 
                 step += 1
-                self.clock.sleep(interval)
+
+                # Sleep in small quanta so that 'stop' is responsive
+                sleep_quantum = 0.2  # seconds
+                remaining = interval
+                while remaining > 0:
+                    if self.repo.has_stop():
+                        break
+                    now = self.clock.now()
+                    if deadline and now >= deadline:
+                        break
+                    q = sleep_quantum if remaining > sleep_quantum else remaining
+                    self.clock.sleep(q)
+                    remaining -= q
+
+                # If stop/deadline triggered during inner sleep loop, break outer loop
+                if self.repo.has_stop():
+                    break
+                if deadline and self.clock.now() >= deadline:
+                    break
         finally:
+            # Release Windows sleep inhibition if enabled
+            if inhibitor is not None:
+                try:
+                    inhibitor.release()
+                except Exception:
+                    pass
             cleanup()
 
     def stop(self) -> None:
